@@ -96,6 +96,11 @@ module Slather
         "https://buildkite.com/" + ENV['BUILDKITE_PROJECT_SLUG'] + "/builds/" + ENV['BUILDKITE_BUILD_NUMBER'] + "#"
       end
 
+      def buddybuild_job_id
+        ENV['BUDDYBUILD_BUILD_NUMBER']
+      end
+      private :buddybuild_job_id
+
       def coveralls_coverage_data
         if ci_service == :travis_ci || ci_service == :travis_pro
           if travis_job_id
@@ -160,6 +165,17 @@ module Slather
             }.to_json
           else
             raise StandardError, "Environment variable `BUILDKITE_BUILD_NUMBER` not set. Is this running on a buildkite build?"
+          end
+        elsif ci_service == :buddybuild
+          if buddybuild_job_id
+            {
+              :service_job_id => buddybuild_job_id,
+              :service_name: "buddybuild",
+              :repo_token: coverage_access_token,
+              :source_files: coverage_files.map(&:as_json)
+            }.to_json
+          else
+            raise StandardError, "Environment variable `BUDDYBUILD_BUILD_NUMBER` not set. Is this running on a buddybuild build?"
           end
         else
           raise StandardError, "No support for ci named #{ci_service}"
