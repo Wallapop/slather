@@ -170,9 +170,9 @@ module Slather
           if buddybuild_job_id
             {
               :service_job_id => buddybuild_job_id,
-              :service_name: "buddybuild",
-              :repo_token: coverage_access_token,
-              :source_files: coverage_files.map(&:as_json)
+              :service_name => "buddybuild",
+              :repo_token => coverage_access_token,
+              :source_files => coverage_files.map(&:as_json)
             }.to_json
           else
             raise StandardError, "Environment variable `BUDDYBUILD_BUILD_NUMBER` not set. Is this running on a buddybuild build?"
